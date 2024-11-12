@@ -1,0 +1,1 @@
+-Make RNN with different ouptup. For example we want our model to predict long or short in a 1 week horizon
