@@ -44,7 +44,7 @@ class BasicLSTM(Predictor):
         input_tensor = torch.FloatTensor(input)  # Shape should be (1, seq_length, 1)
         
         # Make the prediction
-        with torch.no_grad():  # No need to track gradients for inference, needed, don't remove.
+        with torch.no_grad():  # NEEDED, don't remove.
             predicted = self.model(input_tensor)  # Get the output
         
         # Scale back to normal prices
