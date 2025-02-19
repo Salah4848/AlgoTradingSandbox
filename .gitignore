@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 *.joblib
 *.pk
 
+=======
+>>>>>>> 9eb2f471a7f3bc16450ad7d9490a8b4337bdb4f5
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
