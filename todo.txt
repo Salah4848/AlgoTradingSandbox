@@ -1,1 +1,2 @@
 -Make RNN with different ouptup. For example we want our model to predict long or short in a 1 week horizon
+-Should further fix benchmark and make a function to generate multiple stock data for benchmark (reuse code in notebook)

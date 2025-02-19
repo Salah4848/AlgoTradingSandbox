@@ -7,7 +7,7 @@ class BasicMovingAverage(Predictor):
     """
     A predictor based on moving average crossover.
     """
-    def __init__(self, test_data, short_window, long_window):
+    def __init__(self, test_data, short_window=5, long_window=15):
         """
             test_data (list or np.array): The test data used by the benchmark function. It must be array of array of prices.
             Compares the long moving average mean given by long_window and short moving average mean given by short_window to make a trade.
