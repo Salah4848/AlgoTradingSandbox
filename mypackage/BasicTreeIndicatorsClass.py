@@ -1,4 +1,5 @@
 from .PredictorClass import *
+from .indicators import *
 import joblib
 
 class BasicTreeIndicators(Predictor):
@@ -6,54 +7,42 @@ class BasicTreeIndicators(Predictor):
     A simple LSTM-based predictor for stock prices. As long as the model takes as input array of prices and outputs a price this can be re-used
     """
     
-    def __init__(self, test_data: MarketData, model_path: str):
+    def __init__(self, test_data: MarketData, model_path: str, numdays: int =10):
         """
-        Initializes the SimpleLSTM predictor.
-
         Args:
             test_data (MarketData): The test data used by the benchmark function.
             model_path (str): Path to the saved LSTM model.
         """
         super().__init__(test_data)  # Initialize the base class
         self.model = self.load_model(model_path)  # Load the trained model
+        self.numdays = numdays
     
     def load_model(self, model_path: str):
-        """
-        Load the trained LSTM model from the specified path.
-
-        Args:
-            model_path (str): Path to the model file.
-
-        Returns:
-            LSTMModel: The loaded LSTM model.
-        """
         model = joblib.load(model_path)  # Load the model
         return model
 
     def predict(self, sample: MarketData):
+        if sample.sample_length() < 70: # This is needed to compute the indicators
+            return 0
 
-        prices_array = sample.get_sample_price(0)
+        opens = sample.get_sample_open(0)
+        highs = sample.get_sample_high(0)
+        lows = sample.get_sample_low(0)
+        closes = sample.get_sample_close(0)
+        volumes = sample.get_sample_volume(0)
+        dividends = sample.get_sample_dividends(0)
+        stockplits = sample.get_sample_stocksplits(0)
         
-        # Normalize the prices using the same scaler used during training
-        scaled_prices = scaler.fit_transform(prices_array.reshape(-1, 1))  # Reshape for scaling, pytorch takes colomn vectors
-        
-        input = np.array([scaled_prices])
-        input_tensor = torch.FloatTensor(input)  # Shape should be (1, seq_length, 1)
-        
-        # Make the prediction
-        with torch.no_grad():  # NEEDED, don't remove.
-            predicted = self.model(input_tensor)  # Get the output
-        
-        # Scale back to normal prices
-        predicted_price = scaler.inverse_transform(predicted.numpy())
-        predicted_price = predicted_price[0,0]  # Convert to a Python float
+        indicatorsdf = calculate_technical_indicators(highs,lows,closes,volumes)
+        indicators = indicatorsdf.to_numpy()
+        indicators = indicators.T
 
-        # Here we only compute the increment, would need to find a way to include confidence. 
-        # Percentage doesn't work generally since it depends on volatility and type of object (is 2% confident long or not?).
-        increment = (predicted_price - prices_array[-1])
+        datatot = np.concatenate(([opens,highs,lows,closes,volumes,dividends,stockplits],indicators))
+        dataslice = datatot[:,-self.numdays:]
+        input = np.array([dataslice.flatten('F')])
 
-        if increment>=0:
-            return 1
-        else :
-            return -1
-        
+        out = self.model.predict(input)
+
+        signal = 2*out[0]-1
+
+        return signal
