@@ -1,2 +1,4 @@
 -Make RNN with different ouptup. For example we want our model to predict long or short in a 1 week horizon
 -Should further fix benchmark and make a function to generate multiple stock data for benchmark (reuse code in notebook)
+-Implement new strategy class that would work with stuff like pairs trading
+-Implement pairs trading and experiment by changing the steps using ai for ex. (pairs trading works frist by fiding relaionshp between 2 assets and combining them to get a stationary series that fluctiates around the mean)
