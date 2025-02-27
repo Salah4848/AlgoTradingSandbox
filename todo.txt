@@ -3,3 +3,4 @@
 -Implement new strategy class that would work with stuff like pairs trading
 -Implement pairs trading and experiment by changing the steps using ai for ex. (pairs trading works frist by fiding relaionshp between 2 assets and combining them to get a stationary series that fluctiates around the mean)
 -TEEES
+-Teest 2
