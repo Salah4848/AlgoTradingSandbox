@@ -42,7 +42,7 @@ class MACDPredictor(Predictor):
         prices = sample.get_sample_price(0)
 
         if len(prices) < 3*self.long_window*self.signal_window: # Neutral if insufficient data, this should guarentee we have enough data.
-            raise 0
+            return 0
 
         # Calculate MACD and Signal Line
         short_ema = self.calculate_ema(prices, self.short_window)
